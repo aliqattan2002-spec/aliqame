@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>المبرمج بوصلاح </title>
+    <style>
+        :root {
+            --bg-base: #081c19;
+            --bg-surface: rgba(10, 38, 34, 0.65);
+            --bg-surface-hover: rgba(16, 56, 50, 0.85);
+            --accent-primary: #2dd4bf;
+            --accent-secondary: #f59e0b;
+            --accent-success: #10b981;
+            --accent-danger: #f43f5e;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-subtle: rgba(45, 212, 191, 0.16);
+            --border-glow: rgba(45, 212, 191, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 85% 15%, rgba(20, 184, 166, 0.18), transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(245, 158, 11, 0.1), transparent 45%),
+                linear-gradient(180deg, #081c19 0%, #0a2622 100%);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: linear-gradient(rgba(45, 212, 191, 0.04) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(45, 212, 191, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+        }
+
+        
+        #hero-screen {
+            width: 100%;
+            max-width: 500px;
+            min-height: 100vh;
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .top-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(45, 212, 191, 0.1);
+            border: 1px solid var(--border-subtle);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.78rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+            width: fit-content;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        .hero-content {
+            margin: auto 0;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1.15;
+            margin: 16px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-title em {
+            font-style: normal;
+            background: linear-gradient(135deg, #2dd4bf, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .feature-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .pill svg { width: 16px; height: 16px; color: var(--accent-primary); }
+
+        .btn-launch {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #0f766e, #0d9488);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(15, 118, 110, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .btn-launch:active { transform: scale(0.97); }
+
+        .hero-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        
+        #app-workspace {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            padding: 16px;
+            flex-direction: column;
+            min-height: 100vh;
+            animation: fadeUp 0.4s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 14px;
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(37, 99, 235, 0.2));
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+        }
+
+        .app-logo h2 { font-size: 1rem; font-weight: 800; }
+        .app-logo span { font-size: 0.7rem; color: var(--accent-primary); display: block; font-family: monospace; }
+
+        .header-actions { display: flex; gap: 8px; }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 11px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover { background: rgba(255, 255, 255, 0.09); border-color: var(--border-glow); }
+        .icon-btn.active { background: var(--accent-secondary); color: #000; border-color: var(--accent-secondary); }
+        .icon-btn svg { width: 18px; height: 18px; }
+
+        
+        .nav-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            background: var(--bg-surface);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            margin-bottom: 16px;
+        }
+
+        .nav-item {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            padding: 10px 8px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .nav-item svg { width: 16px; height: 16px; }
+
+        .nav-item.active {
+            background: rgba(45, 212, 191, 0.14);
+            border-color: var(--border-glow);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-item.active svg { color: var(--accent-primary); }
+
+        
+        .view-card {
+            display: none;
+            background: var(--bg-surface);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 22px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            animation: fadeUp 0.35s ease;
+        }
+
+        .view-card.active { display: flex; flex-direction: column; }
+
+        /* قسم العجلة */
+        .wheel-stage {
+            position: relative;
+            width: 268px;
+            height: 268px;
+            margin: 8px auto 22px;
+        }
+
+        .wheel-needle {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: var(--accent-secondary);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+        }
+
+        .wheel-disc {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid rgba(45, 212, 191, 0.3);
+            box-shadow: 0 0 35px rgba(45, 212, 191, 0.15);
+            overflow: hidden;
+            transition: transform 4.2s cubic-bezier(0.12, 0.85, 0.18, 1);
+        }
+
+        .wheel-hub {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            background: #081c19;
+            border: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+        }
+
+        .status-box {
+            background: rgba(8, 28, 25, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            margin-bottom: 16px;
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #e0f2fe;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .action-btn svg { width: 18px; height: 18px; }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-primary-sky {
+            background: linear-gradient(135deg, #0f766e, #115e59);
+            color: #fff;
+            border: 1px solid rgba(45, 212, 191, 0.4);
+        }
+
+        .btn-primary-gold {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #081c19;
+        }
+
+        
+        .deck-card {
+            background: linear-gradient(160deg, rgba(45, 212, 191, 0.08), rgba(8, 28, 25, 0.6));
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            padding: 36px 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .deck-tag {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-family: monospace;
+            font-size: 0.72rem;
+            color: var(--accent-primary);
+            background: rgba(45, 212, 191, 0.12);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .deck-card p {
+            font-size: 1.08rem;
+            font-weight: 700;
+            line-height: 1.65;
+        }
+
+        
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .player-card {
+            background: rgba(8, 28, 25, 0.55);
+            border: 1px solid var(--border-subtle);
+            padding: 10px 12px;
+            border-radius: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .player-card.active-turn {
+            border-color: var(--accent-secondary);
+            background: rgba(245, 158, 11, 0.12);
+        }
+
+        .p-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            overflow: hidden;
+        }
+
+        .p-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 85px; }
+
+        .p-badge {
+            background: rgba(45, 212, 191, 0.15);
+            color: var(--accent-primary);
+            font-family: monospace;
+            font-weight: 800;
+            font-size: 0.82rem;
+            padding: 2px 8px;
+            border-radius: 7px;
+        }
+
+        .player-card.active-turn .p-badge {
+            background: var(--accent-secondary);
+            color: #000;
+        }
+
+        .toolbar-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .field-input {
+            flex: 1;
+            background: rgba(8, 28, 25, 0.65);
+            border: 1px solid var(--border-subtle);
+            border-radius: 11px;
+            padding: 10px 12px;
+            color: var(--text-primary);
+            font-size: 0.84rem;
+            outline: none;
+        }
+
+        .field-input:focus { border-color: var(--accent-primary); }
+
+        .mini-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0 12px;
+            border-radius: 11px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mini-btn svg { width: 15px; height: 15px; }
+
+        .question-box {
+            background: rgba(8, 28, 25, 0.55);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .turn-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.76rem;
+            color: var(--accent-secondary);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .q-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            line-height: 1.55;
+            margin-bottom: 14px;
+        }
+
+        .opts-stack { display: flex; flex-direction: column; gap: 8px; }
+
+        .opt-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 12px 14px;
+            border-radius: 12px;
+            text-align: right;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .opt-item:hover:not(:disabled) { background: rgba(45, 212, 191, 0.1); border-color: var(--border-glow); }
+        .opt-item.is-correct { background: rgba(16, 185, 129, 0.25) !important; border-color: var(--accent-success); color: #6ee7b7; }
+        .opt-item.is-wrong { background: rgba(244, 63, 94, 0.25) !important; border-color: var(--accent-danger); color: #fda4af; }
+
+        
+        .admin-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 10px;
+        }
+
+        .sec-label {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin: 12px 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .items-scroll {
+            max-height: 130px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .list-row {
+            background: rgba(8, 28, 25, 0.5);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-del {
+            background: rgba(244, 63, 94, 0.15);
+            color: #fda4af;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            cursor: pointer;
+        }
+
+        .form-card {
+            background: rgba(8, 28, 25, 0.4);
+            border: 1px solid var(--border-subtle);
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        select.field-input option { background: #081c19; }
+
+        
+        #toast-box {
+            position: fixed;
+            bottom: 22px;
+            left: 50%;
+            transform: translateX(-50%) translateY(90px);
+            background: #0f172a;
+            border: 1px solid var(--accent-primary);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 99px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            z-index: 999;
+            transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            white-space: nowrap;
+        }
+
+        #toast-box.visible { transform: translateX(-50%) translateY(0); }
+
+        /* ===== لغز المملكة ===== */
+        .pz-head { display:flex; justify-content:space-between; align-items:center; font-family:monospace; font-size:.72rem; color:var(--accent-primary); margin-bottom:14px; }
+        .pz-dots { display:flex; gap:8px; margin-bottom:18px; }
+        .pz-dot { flex:1; height:6px; border-radius:9px; background:rgba(255,255,255,.1); transition:.4s; }
+        .pz-dot.done { background:var(--accent-success); box-shadow:0 0 10px var(--accent-success); }
+        .pz-dot.now { background:var(--accent-secondary); }
+        .pz-stage { font-size:.78rem; color:var(--accent-secondary); font-weight:800; margin-bottom:8px; }
+        .pz-q { background:rgba(8,28,25,.6); border:1px solid var(--border-subtle); border-radius:16px; padding:18px; line-height:1.9; font-weight:700; margin-bottom:14px; }
+        .pz-input { width:100%; padding:14px; border-radius:14px; border:1px solid var(--border-glow); background:rgba(0,0,0,.25); color:#fff; font-size:1rem; text-align:center; outline:none; margin-bottom:10px; }
+        .pz-row { display:flex; gap:8px; }
+        .pz-row .action-btn { flex:1; }
+        .pz-hint { margin-top:12px; font-size:.85rem; color:#fcd34d; min-height:20px; text-align:center; }
+        .shake { animation: shake .4s; border-color: var(--accent-danger) !important; }
+        @keyframes shake { 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+        #video-modal { position:fixed; inset:0; z-index:200; background:rgba(3,12,10,.94); display:none; flex-direction:column; align-items:center; justify-content:center; padding:18px; gap:14px; animation:fadeUp .5s ease; }
+        #video-modal.open { display:flex; }
+        #video-modal video { width:100%; max-width:760px; max-height:70vh; border-radius:18px; border:1px solid var(--border-glow); box-shadow:0 0 60px rgba(45,212,191,.25); background:#000; }
+        .vm-title { font-size:1.3rem; font-weight:900; text-align:center; background:linear-gradient(135deg,#2dd4bf,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .q-timer { height: 8px; border-radius: 9px; background: rgba(255,255,255,.1); overflow: hidden; margin: 4px 0 12px; }
+        #q-timer-bar { height: 100%; width: 100%; background: var(--accent-success); transition: width .25s linear, background .3s; }
+        #q-timer-bar.low { background: var(--accent-danger); }
+        .players-empty { grid-column: 1 / -1; text-align: center; color: #94a3b8; padding: 10px; font-size: .9rem; }
+        .p-del { background: none; border: 0; color: #94a3b8; font-size: 1.1rem; cursor: pointer; padding: 0 4px; }
+        .res-row { display: flex; justify-content: space-between; gap: 8px; padding: 12px 14px; border: 1px solid var(--border-subtle); border-radius: 12px; font-weight: 700; background: rgba(0,0,0,.2); }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-bg"></div>
+    <div class="grid-overlay"></div>
+
+    
+    <section id="hero-screen">
+        <div class="top-badge">
+            <span class="pulse-dot"></span>
+            <span>OFFLINE INTERACTIVE EDITION</span>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="hero-title"><em>المبرمج بوصلاح</em></h1>
+            <p class="hero-desc"></p>
+
+            <div class="feature-pills">
+                <div class="pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+                    <span>عجلة الأحكام</span>
+                </div>
+                <div class="pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 8h10M7 12h6"/></svg>
+                    <span>بطاقات التحدي</span>
+                </div>
+                <div class="pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                    <span>مسابقة النقاط</span>
+                </div>
+            </div>
+
+            <button class="btn-launch" onclick="enterGame()">
+                <span>ابدأ التجربة الآن</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+        </div>
+
+        <div class="hero-footer">
+            <span></span>
+            <span style="font-family: monospace;">v2.4 PRO</span>
+        </div>
+    </section>
+
+    <!-- 2. مساحة اللعب الرئيسية (Workspace) -->
+    <div id="app-workspace">
+        <header class="app-header">
+            <div class="app-logo">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
+                </div>
+                <div>
+                    <h2>المبرمج بوصلاح</h2>
+                    <span>OFFLINE WORKSPACE</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="btn-sound" onclick="toggleSound()" title="الصوت">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <nav class="nav-bar" id="nav-bar">
+            <button class="nav-item active" id="nav-wheel" onclick="switchView('wheel')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2v7M12 15v7M2 12h7M15 12h7"/></svg>
+                <span>العجلة</span>
+            </button>
+            <button class="nav-item" id="nav-cards" onclick="switchView('cards')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 13h6"/></svg>
+                <span>بطاقات</span>
+            </button>
+            <button class="nav-item" id="nav-quiz" onclick="switchView('quiz')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <span>المسابقة</span>
+            </button>
+            <button class="nav-item" id="nav-puzzle" onclick="switchView('puzzle'); renderPuzzle()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                <span>اللغز</span>
+            </button>
+        </nav>
+
+        <!-- 1. العجلة -->
+        <section id="view-wheel" class="view-card active">
+            <div class="wheel-stage">
+                <div class="wheel-needle">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21L4 7h16l-8 14z"/></svg>
+                </div>
+                <div class="wheel-disc" id="wheel-disc">
+                    <canvas id="wheel-canvas" width="268" height="268"></canvas>
+                </div>
+                <div class="wheel-hub">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"/></svg>
+                </div>
+            </div>
+            <div class="status-box" id="wheel-status">اضغط على زر التدوير لاختيار التحدي</div>
+            <button class="action-btn btn-primary-gold" id="spin-trigger" onclick="spinWheel()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                <span>تدوير العجلة</span>
+            </button>
+        </section>
+
+        <!-- 2. البطاقات -->
+        <section id="view-cards" class="view-card">
+            <div class="deck-card">
+                <span class="deck-tag" id="card-tag">READY // 01</span>
+                <p id="card-text">اسحب بطاقة عشوائية لعرض سؤال أو تحدي جماعي!</p>
+            </div>
+            <button class="action-btn btn-primary-sky" onclick="drawCard()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
+                <span>سحب بطاقة جديدة</span>
+            </button>
+        </section>
+
+        <!-- 3. المسابقة والنقاط -->
+        <section id="view-quiz" class="view-card">
+            <div class="players-grid" id="players-grid"></div>
+            
+            <div class="toolbar-row">
+                <input type="text" id="player-input" class="field-input" placeholder="اسم اللاعب..." onkeydown="if(event.key === 'Enter') addPlayer()">
+                <button class="mini-btn" onclick="addPlayer()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>إضافة</span>
+                </button>
+                <button class="mini-btn" onclick="resetScores()" title="تصفير النقاط">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </button>
+            </div>
+
+            <div class="question-box">
+                <div class="turn-meta">
+                    <span id="turn-badge">الدور: -</span>
+                    <span id="q-timer-num" style="font-family: monospace; font-weight: 900;">⏱ 30</span>
+                    <span id="q-counter" style="font-family: monospace;">Q: 0/0</span>
+                </div>
+                <div class="q-timer"><div id="q-timer-bar"></div></div>
+                <div class="q-title" id="q-title">أضف أسماء اللاعبين ثم اضغط «ابدأ المسابقة» — لكل سؤال 30 ثانية</div>
+                <div class="opts-stack" id="opts-stack"></div>
+            </div>
+
+            <button class="action-btn btn-primary-sky" id="quiz-btn" onclick="startQuiz()">
+                <span id="quiz-btn-text">ابدأ المسابقة</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+        </section>
+
+        
+        <!-- 4. لغز المملكة -->
+        <section id="view-puzzle" class="view-card">
+            <div class="pz-head"><span>SECURE FILE // KSA</span><span id="pz-count">0/3</span></div>
+            <div class="pz-dots" id="pz-dots"></div>
+            <div id="pz-body"></div>
+        </section>
+    </div>
+
+    <div id="video-modal">
+        <div class="vm-title">🇸🇦 تم فك الشفرة… هذه رسالتك</div>
+        <video id="ksa-video" controls playsinline preload="none"></video>
+        <button id="vpick-btn" class="action-btn btn-primary-sky" style="max-width:300px;display:none" onclick="document.getElementById('vpick').click()">اختر ملف الفيديو من الجهاز</button>
+        <input type="file" id="vpick" accept="video/*" hidden onchange="pickVideo(event)">
+        <button class="action-btn btn-primary-gold" style="max-width:300px" onclick="closeVideo()">إغلاق</button>
+    </div>
+
+    <div id="toast-box">تم التحديث</div>
+
+    <script>
+        const OFFLINE_DATA = {"wheel":["موقف محرج 🙈","قول نكتة 😂","10 ضغط 💪","قلّد واحد منا 🎙️","اتصل بصديق 📱","ردد قطان طق قطان 5 مرات بسرعة 🎙️"],"cards":["تحدي: غنّي بيت شعر أو شيلة بصوت مسموع بدون خجل.","تحدي : اختر كلمة عشوائية (مثل: القهوة، الصحراء، الجوال) وألف شعر لهذه الكلمة خلال 30 ثانية فقط!","سؤال: لو تقدر تسافر لأي جزيرة بالعالم الحين، وين بتروح؟","سؤال: وش أفضل أكلة بحرية مستحيل تمل منها؟","تحدي: ارسم على الرمل شعار خاص بطلعتنا اليوم.","لو خيّروك تعيش سنة كاملة بدون إنترنت نهائياً أو بدون مكيف صيفاً.. وش تختار وليش؟","وش أغرب موقف صار معك وأنت تسوق السيارة على خط سفر؟","افتح ألبوم الصور بجوالك، وغمض عيونك واختار صورة عشوائية.. واضطر تروي قصة وهمية عنها خلال 30 ثانية!","لو صار عندك مليون ريال فجأة اليوم.. وش أول شغلة تشتريها أو تسويها؟","اعتبر نفسك معلق مباراة كروية، وعلق بحماس وتفاعل شديد على حركة أي شخص قدامك"],"quiz":[{"q":"في أي عام هجري وقعت حادثة موقعة الطف (معركة كربلاء) التي استُشهد فيها الإمام الحسين عليه السلام وأهل بيته وصحبه الأطهار؟","options":["61 هجري ","50 هجري ","60 هجري ","62 هجري "],"answer":0},{"q":"من هو الإمام من أئمة أهل البيت الذي تولى الإمامة وهو في سن الثامنة تقريباً (أصغر الأئمة سناً عند تسلم الإمامة بعد المهدي)؟","options":["الامام علي الهادي ع ","الامام علي بن الحسين ع ","الامام الصادق ع ","الامام محمد الجواد ع "],"answer":3},{"q":"كم عدد سور القرآن الكريم؟","options":["125 سورة ","114 سورة ","116 سورة ","115 سورة "],"answer":1},{"q":"ما هي أصغر دولة في العالم من حيث المساحة؟","options":["موناكو","سان مارينو","الفاتيكان","البحرين"],"answer":2},{"q":"ما هو الكوكب الذي يُعرف بـ \"الكوكب الأحمر\"؟","options":["الزهرة","المشتري","المريخ","زحل"],"answer":2},{"q":"ما هو العضو المسؤول عن ضخ الدم إلى جميع أنحاء الجسم؟","options":["الرئتان","الكبد","القلب","الكلى"],"answer":2},{"q":"كم عدد ألوان قوس قزح؟","options":["5 ألوان","7 ألوان","6 ألوان","8 ألوان"],"answer":1},{"q":"ما هي أعلى قمة جبلية في المملكة العربية السعودية؟","options":["جبل اللوز","جبل السودة","جبل طويق","جبل أحد"],"answer":1},{"q":"كم عدد المناطق الإدارية في المملكة العربية السعودية؟","options":["13 منطقة","11 منطقة","12 منطقة","14 منطقة"],"answer":0},{"q":"ما هي أكبر واحة نخيل محاطة بالرمال في العالم وتقع في السعودية؟","options":["واحة العلا","واحة الأحساء","واحة تيماء","واحة دومة الجندل"],"answer":1},{"q":"ما هو الفيتامين الذي يحصل عليه جسم الإنسان بشكل طبيعي عند التعرض لأشعة الشمس؟","options":["فيتامين A","فيتامين C","فيتامين D","فيتامين B12"],"answer":2},{"q":"ما هي الدولة التي اخترعت الورق والطباعة والبوصلة قديماً؟","options":["اليابان","الصين","الهند","اليونان"],"answer":1},{"q":"ما هي العملة الرسمية لدولة اليابان؟","options":["اليوان","الوون","الين","الروبية"],"answer":2},{"q":"أنا الهداف التاريخي لدوري أبطال أوروبا، والهداف التاريخي للمنتخبات الوطنية. حققتُ الكرة الذهبية 5 مرات، ولعبتُ لأكبر الأندية في إنجلترا وإسبانيا وإيطاليا، قبل أن أفتح باب النجوم العالميين في الدوري السعودي من بوابة نادي النصر، وتشتهر احتفاليتي بصيحة يسمعها الملعب بأكمله.. فمن أكون؟","options":["ليونيل ميسي ","كريستيانو رونالدو ","تشافي الونسو ","غاريث بيل "],"answer":1},{"q":"كم عدد القلوب التي يمتلكها الأخطبوط؟","options":["قلب واحد","قلبان","3 قلوب","4 قلوب"],"answer":2},{"q":"في أي دولة يقع أطول نفق للسكك الحديدية في العالم (نفق غوتارد)؟","options":["اليابان ","سويسرا","فرنسا","النرويج"],"answer":1},{"q":"يتضاعف عدد زهور اللوتس في بحيرة كل يوم. إذا استغرقت الزهور 30 يوماً لتغطية البحيرة بالكامل، ففي أي يوم كانت تغطي نصف البحيرة؟","options":["29 ","27","28","30"],"answer":0},{"q":"ما هو الرقم المفقود في هذه المتسلسلة: ( 2 ، 6 ، 12 ، 20 ، 30 ، ؟ )","options":["42","43","50","51"],"answer":0},{"q":"ما هي الدولة التي تمتلك أكبر عدد من الأهرامات في العالم (أكثر من مصر)؟","options":["ليبيا ","الجزائر ","السودان","مصر"],"answer":2},{"q":"ما اسم المضيق الذي يفصل بين قارتي آسيا وأمريكا الشمالية؟","options":["مضيق ملقا","مضيق بيرنغ","مضيق ماجلان","مضيق هرمز"],"answer":1},{"q":"ما هي أول شركة أطلقت أول معالج دقيق (Microprocessor) تجاري في العالم عام 1971م (معالج 4004)؟","options":["Motorola","IBM","Intel (إنتل)","AMD"],"answer":2},{"q":"ماذا يُطلق على أصغر وحدة لتخزين البيانات في عالم الحاسوب وتأخذ القيمة (0 أو 1)؟","options":["بايت (Byte)","بت (Bit)","كيلوبايت","ميغابايت"],"answer":1}],"puzzle":{"video":"","stages":[{"title":"مرحلة جديدة","q":"أقع في قلب مدينة الهفوف القديمة، وأُعدّ من أبرز الوجهات التراثية والسياحية في الواحة فمن اكون ؟","a":["قصر ابراهيم","ابراهيم"],"hint":"هو قصر وله قلعه تاريخية "},{"title":"مرحلة جديدة","q":"أُعدّ مقرّاً رئيسياً لـ صندوق الاستثمارات العامة (PIF)، وأُعدّ من أبرز معالم أفق الرياض الحديث فمن اكون ؟","a":["مركز الملك عبدالله المالي","مدينة الملك عبدالله المالية","المالية","كافد","KAFD"],"hint":"المبرمج اللي سوى اللعبه يشتغل فيها "},{"title":"مرحلة جديدة","q":"عندما كان عمري 6 سنوات، كان عمر أختي نصف عمري  الآن عمري 70 سنة، فكم يكون عمر أختي؟","a":["67 سنة","67"],"hint":"لا تقسم العمر الحالي على اثنين! ركّز على فارق السنوات بينك وبين أختك عندما كنت صغيراً؛ فالفارق الزمني بين الأخوين يظل ثابتاً مهما مرّت السنوات."},{"title":"مرحلة جديدة","q":"اسمى مشتق من صوت الماء المتدفق تحت الرمال، احتضنتُ أولى خطوات التوحيد شرقاً في قصرٍ عريق، وأُنتج أجود أنواع الأرز والتمور في المملكة... فمن أكون؟","a":["الاحساء","الحسا","الهفوف","هجر"],"hint":"انت قاعد فيها "}]}};
+        const DEFAULT_DB = {
+            wheel: [
+                "جهّز القهوة ☕",
+                "قول نكتة 😂",
+                "اجمع 5 صدفات 🐚",
+                "قلّد واحد منا 🎙️",
+                "10 ضغط 💪",
+                "موقف محرج 🙈",
+                "مديح للجميع 🌟",
+                "اتصل بصديق 📱"
+            ],
+            cards: [
+                "تحدي: غنّي بيت شعر أو شيلة بصوت مسموع بدون خجل.",
+                "سؤال: لو تقدر تسافر لأي جزيرة بالعالم الحين، وين بتروح؟",
+                "تحدي: امشِ على رمل البحر بطريقة عارضة أزياء لمسافة 5 أمتار.",
+                "سؤال: وش أكثر موقف يضحكك كل ما تذكرته في طلعاتنا السابقة؟",
+                "تحدي: ارسم على الرمل شعار خاص بطلعتنا اليوم.",
+                "سؤال: وش أفضل أكلة بحرية مستحيل تمل منها؟"
+            ],
+            quiz: [
+                { q: "ما هو أسرع كائن بحري في السباحة؟", options: ["سمكة الزعنفة الشراعية", "الدولفين", "القرش الأبيض", "الحوت الأزرق"], answer: 0 },
+                { q: "ما اسم الأشجار التي تنمو في المياه المالحة على سواحل المملكة؟", options: ["المانجروف (القرم)", "الطلح", "السدر", "الأثل"], answer: 0 },
+                { q: "كم قلب يمتلك الأخطبوط؟", options: ["3 قلوب", "قلب واحد", "قلبان", "4 قلوب"], answer: 0 },
+                { q: "أي البحار التالية يُعد الأكثر ملوحة في العالم؟", options: ["البحر الميت", "البحر الأحمر", "بحر العرب", "البحر المتوسط"], answer: 0 }
+            ]
+        };
+
+        let db = JSON.parse(JSON.stringify(DEFAULT_DB)); let STAGES = [];
+        let players = JSON.parse(localStorage.getItem('bws_players_v2')) || [];
+        let turnIdx = 0;
+        let qIdx = 0;
+        let currentDeg = 0;
+        let spinning = false;
+        let soundOn = true;
+        let adminOpen = false;
+        let activeView = 'wheel';
+
+       
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function beep(freq, type = 'sine', dur = 0.14) {
+            if (!soundOn) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + dur);
+        }
+
+        function toast(msg) {
+            const box = document.getElementById('toast-box');
+            box.textContent = msg;
+            box.classList.add('visible');
+            setTimeout(() => box.classList.remove('visible'), 2400);
+        }
+
+        function enterGame() {
+            document.getElementById('hero-screen').style.display = 'none';
+            document.getElementById('app-workspace').style.display = 'flex';
+            beep(520, 'sine', 0.15);
+            drawWheel();
+            renderPlayers();
+        }
+
+        function toggleSound() {
+            soundOn = !soundOn;
+            const btn = document.getElementById('btn-sound');
+            btn.innerHTML = soundOn
+                ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`
+                : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+            toast(soundOn ? "الصوت مفعل" : "تم كتم الصوت");
+        }
+
+        function switchView(view) {
+            if (view !== 'quiz') stopQuiz();
+            activeView = view;
+            document.querySelectorAll('.view-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(`view-${view}`).classList.add('active');
+            document.getElementById(`nav-${view}`).classList.add('active');
+            beep(480, 'sine', 0.08);
+        }
+
+        function persistPlayers() {
+            localStorage.setItem('bws_players_v2', JSON.stringify(players));
+            renderPlayers();
+        }
+
+        
+        const palette = ['#0f766e', '#0f766e', '#b45309', '#4338ca', '#be185d', '#047857', '#6d28d9', '#c2410c'];
+        function drawWheel() {
+            const canvas = document.getElementById('wheel-canvas');
+            const ctx = canvas.getContext('2d');
+            const items = db.wheel.length ? db.wheel : ["أضف عناصر"];
+            const count = items.length;
+            const arc = (2 * Math.PI) / count;
+            const r = canvas.width / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < count; i++) {
+                const ang = i * arc - Math.PI / 2;
+                ctx.beginPath();
+                ctx.fillStyle = palette[i % palette.length];
+                ctx.moveTo(r, r);
+                ctx.arc(r, r, r, ang, ang + arc);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(r, r);
+                ctx.rotate(ang + arc / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#f8fafc";
+                ctx.font = "bold 12px system-ui, sans-serif";
+                const txt = items[i].length > 15 ? items[i].slice(0, 14) + '..' : items[i];
+                ctx.fillText(txt, r - 16, 4);
+                ctx.restore();
+            }
+        }
+
+        function spinWheel() {
+            if (spinning || !db.wheel.length) return;
+            spinning = true;
+            document.getElementById('spin-trigger').disabled = true;
+            document.getElementById('wheel-status').textContent = "جاري الاختيار العشوائي...";
+
+            const count = db.wheel.length;
+            const slice = 360 / count;
+            const winIdx = Math.floor(Math.random() * count);
+            const target = 360 - (winIdx * slice + slice / 2);
+            const mod = currentDeg % 360;
+            currentDeg += (360 * 6) + (target - mod + 360) % 360;
+
+            document.getElementById('wheel-disc').style.transform = `rotate(${currentDeg}deg)`;
+            beep(320, 'triangle', 0.25);
+
+            setTimeout(() => {
+                spinning = false;
+                document.getElementById('spin-trigger').disabled = false;
+                document.getElementById('wheel-status').textContent = db.wheel[winIdx];
+                beep(660, 'sine', 0.2);
+                setTimeout(() => beep(880, 'sine', 0.25), 110);
+            }, 4200);
+        }
+
+        // البطاقات
+        function drawCard() {
+            if (!db.cards.length) return;
+            const idx = Math.floor(Math.random() * db.cards.length);
+            const txt = document.getElementById('card-text');
+            document.getElementById('card-tag').textContent = `CARD // 0${idx + 1}`;
+            txt.style.opacity = 0;
+            beep(440, 'sine', 0.09);
+            setTimeout(() => {
+                txt.textContent = db.cards[idx];
+                txt.style.opacity = 1;
+            }, 140);
+        }
+
+        // اللاعبين والمسابقة
+        const QTIME = 30;
+        let quizRunning = false, qTimerId = null, qNextId = null, qStart = 0, curItem = null, answered = false;
+        const $q = id => document.getElementById(id);
+        const escH = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const QTITLE_DEFAULT = 'أضف أسماء اللاعبين ثم اضغط «ابدأ المسابقة» — لكل سؤال 30 ثانية';
+
+        function renderPlayers() {
+            $q('players-grid').innerHTML = players.length ? players.map((p, i) => `
+                <div class="player-card ${i === turnIdx ? 'active-turn' : ''}" onclick="selectTurn(${i})">
+                    <div class="p-info"><span class="p-name">${escH(p.name)}</span></div>
+                    <span class="p-badge">${p.score}</span>
+                    <button class="p-del" onclick="event.stopPropagation(); removePlayer(${i})" title="حذف">×</button>
+                </div>`).join('') : '<div class="players-empty">أضف أسماء اللاعبين للبدء 👇</div>';
+            $q('turn-badge').textContent = players[turnIdx] ? `الدور: ${players[turnIdx].name}` : 'الدور: -';
+            $q('q-counter').textContent = `Q: ${qIdx}/${db.quiz.length}`;
+        }
+
+        function selectTurn(i) { if (quizRunning) return; turnIdx = i; renderPlayers(); }
+
+        function addPlayer() {
+            const inp = $q('player-input');
+            const name = inp.value.trim();
+            if (!name) return;
+            players.push({ name, score: 0, answered: 0 });
+            inp.value = '';
+            persistPlayers();
+            toast(`تمت إضافة ${name}`);
+        }
+
+        function removePlayer(i) {
+            if (quizRunning) return toast("لا يمكن الحذف أثناء المسابقة");
+            players.splice(i, 1);
+            if (turnIdx >= players.length) turnIdx = 0;
+            persistPlayers();
+        }
+
+        function resetScores() {
+            if (quizRunning) return toast("لا يمكن التصفير أثناء المسابقة");
+            players.forEach(p => { p.score = 0; p.answered = 0; });
+            turnIdx = 0;
+            persistPlayers();
+            toast("تم تصفير النقاط");
+        }
+
+        function startQuiz() {
+            if (!db.quiz.length) return toast("لا توجد أسئلة");
+            if (!players.length) return toast("أضف لاعباً واحداً على الأقل");
+            players.forEach(p => { p.score = 0; p.answered = 0; });
+            turnIdx = 0; qIdx = 0; quizRunning = true;
+            $q('quiz-btn').style.display = 'none';
+            persistPlayers();
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            clearTimeout(qNextId);
+            if (!quizRunning) return;
+            if (qIdx >= db.quiz.length) return showResults();
+            const item = db.quiz[qIdx];
+            curItem = item; answered = false;
+            $q('q-title').textContent = item.q;
+            const stack = $q('opts-stack');
+            stack.innerHTML = '';
+            item.options.forEach((opt, i) => {
+                if (!opt.trim()) return;
+                const btn = document.createElement('button');
+                btn.className = 'opt-item';
+                btn.dataset.i = i;
+                btn.innerHTML = `<span>${escH(opt)}</span>`;
+                btn.onclick = () => checkAns(i, item.answer, btn);
+                stack.appendChild(btn);
+            });
+            qIdx++;
+            renderPlayers();
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(qTimerId);
+            qStart = Date.now();
+            let lastSec = QTIME;
+            const bar = $q('q-timer-bar'), num = $q('q-timer-num');
+            bar.classList.remove('low'); bar.style.width = '100%'; num.textContent = '⏱ ' + QTIME;
+            qTimerId = setInterval(() => {
+                const left = Math.max(0, QTIME - (Date.now() - qStart) / 1000);
+                bar.style.width = (left / QTIME * 100) + '%';
+                bar.classList.toggle('low', left <= 10);
+                const sec = Math.ceil(left);
+                if (sec !== lastSec) { lastSec = sec; num.textContent = '⏱ ' + sec; if (sec <= 5 && sec > 0) beep(440, 'square', 0.05); }
+                if (left <= 0) timeUp();
+            }, 200);
+        }
+
+        function finishTurn() {
+            turnIdx = (turnIdx + 1) % players.length;
+            persistPlayers();
+            qNextId = setTimeout(nextQuestion, 1800);
+        }
+
+        function timeUp() {
+            clearInterval(qTimerId);
+            if (answered) return;
+            answered = true;
+            document.querySelectorAll('.opt-item').forEach(b => b.disabled = true);
+            const c = document.querySelector(`.opt-item[data-i="${curItem.answer}"]`);
+            if (c) c.classList.add('is-correct');
+            const p = players[turnIdx]; p.answered = (p.answered || 0) + 1;
+            beep(210, 'sawtooth', 0.25);
+            toast(`انتهى الوقت يا ${p.name} ⏰`);
+            finishTurn();
+        }
+
+        function checkAns(sel, corr, el) {
+            if (answered) return;
+            answered = true;
+            clearInterval(qTimerId);
+            document.querySelectorAll('.opt-item').forEach(b => b.disabled = true);
+            const p = players[turnIdx]; p.answered = (p.answered || 0) + 1;
+            if (sel === corr) {
+                el.classList.add('is-correct');
+                p.score += 1;
+                beep(600, 'sine', 0.14);
+                setTimeout(() => beep(880, 'sine', 0.22), 110);
+                toast(`إجابة صحيحة! +1 نقطة لـ ${p.name}`);
+            } else {
+                el.classList.add('is-wrong');
+                const c = document.querySelector(`.opt-item[data-i="${corr}"]`);
+                if (c) c.classList.add('is-correct');
+                beep(210, 'sawtooth', 0.25);
+                toast(`إجابة خاطئة يا ${p.name}`);
+            }
+            finishTurn();
+        }
+
+        function showResults() {
+            quizRunning = false;
+            clearInterval(qTimerId);
+            $q('q-timer-bar').style.width = '0%';
+            $q('q-timer-num').textContent = '⏱ -';
+            const medals = ['🥇', '🥈', '🥉'];
+            const ranked = [...players].sort((a, b) => b.score - a.score);
+            $q('q-title').textContent = '🏆 نتائج المسابقة';
+            $q('opts-stack').innerHTML = ranked.map((p, i) =>
+                `<div class="res-row"><span>${medals[i] || (i + 1) + '.'} ${escH(p.name)}</span><span>${p.score} نقطة (من ${p.answered || 0} أسئلة)</span></div>`).join('');
+            qIdx = 0; renderPlayers();
+            $q('turn-badge').textContent = 'انتهت المسابقة';
+            $q('quiz-btn-text').textContent = 'إعادة المسابقة';
+            $q('quiz-btn').style.display = '';
+            beep(520, 'sine', 0.15); setTimeout(() => beep(780, 'sine', 0.2), 150); setTimeout(() => beep(1040, 'sine', 0.3), 320);
+        }
+
+        function stopQuiz() {
+            if (!quizRunning) return;
+            quizRunning = false;
+            clearInterval(qTimerId); clearTimeout(qNextId);
+            $q('q-title').textContent = QTITLE_DEFAULT;
+            $q('opts-stack').innerHTML = '';
+            $q('q-timer-bar').style.width = '100%'; $q('q-timer-num').textContent = '⏱ 30';
+            $q('quiz-btn-text').textContent = 'ابدأ المسابقة';
+            $q('quiz-btn').style.display = '';
+            qIdx = 0; renderPlayers();
+        }
+
+        // ===== المحتوى من السيرفر =====
+        async function loadContent() {
+            if (OFFLINE_DATA) {
+                db = { wheel: OFFLINE_DATA.wheel, cards: OFFLINE_DATA.cards, quiz: OFFLINE_DATA.quiz };
+                STAGES = OFFLINE_DATA.puzzle.stages.map(({ title, q, hint }) => ({ title, q, hint }));
+            }
+            drawWheel(); renderPlayers(); renderPuzzle();
+        }
+
+        // ===== لغز المملكة (الأجوبة تُفحص في السيرفر) =====
+        let pzStage = 0, pzWrong = 0, pzAnswers = [], pzVideo = '';
+        const normAr = t => String(t).trim().replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+            .replace(/[\u064B-\u0652\u0640\s]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/^ال/, '').toLowerCase();
+        const rpc = async (fn, a) => {
+            const P = OFFLINE_DATA && OFFLINE_DATA.puzzle; if (!P) return null;
+            const ok = (st, v) => st.a.some(x => normAr(x) === normAr(v));
+            if (fn === 'check_answer') return !!P.stages[a.p_i] && ok(P.stages[a.p_i], a.p_ans);
+            if (fn === 'finish_puzzle') return a.p_answers.length === P.stages.length && P.stages.every((st, i) => ok(st, a.p_answers[i])) ? 'watan.mp4' : null;
+        };
+
+        function renderPuzzle() {
+            const n = STAGES.length;
+            document.getElementById('pz-count').textContent = `${Math.min(pzStage, n)}/${n}`;
+            document.getElementById('pz-dots').innerHTML = STAGES.map((_, i) =>
+                `<div class="pz-dot ${i < pzStage ? 'done' : i === pzStage ? 'now' : ''}"></div>`).join('');
+            const body = document.getElementById('pz-body');
+            if (!n) { body.innerHTML = `<div class="pz-q" style="text-align:center">اللغز غير متاح حالياً</div>`; return; }
+            if (pzStage >= n) {
+                body.innerHTML = `<div class="pz-q" style="text-align:center">🔓 الملف مفتوح. أحسنت!</div>
+                    <button class="action-btn btn-primary-gold" onclick="openVideo()">▶ شاهد الرسالة مرة أخرى</button>`;
+                return;
+            }
+            const s = STAGES[pzStage];
+            body.innerHTML = `<div class="pz-stage">${s.title}</div>
+                <div class="pz-q">${s.q}</div>
+                <input id="pz-in" class="pz-input" placeholder="اكتب الإجابة هنا" autocomplete="off" onkeydown="if(event.key==='Enter')checkPuzzle()">
+                <div class="pz-row">
+                    <button class="action-btn btn-primary-sky" onclick="checkPuzzle()">تحقق</button>
+                    <button class="action-btn btn-primary-gold" onclick="showHint()">تلميح</button>
+                </div>
+                <div class="pz-hint" id="pz-hint"></div>`;
+        }
+
+        function showHint() {
+            document.getElementById('pz-hint').textContent = '💡 ' + (STAGES[pzStage].hint || 'لا يوجد تلميح');
+            beep(400, 'triangle', 0.1);
+        }
+
+        async function checkPuzzle() {
+            const inp = document.getElementById('pz-in');
+            const val = inp.value.trim();
+            if (!val) return;
+            let res;
+            try { res = await rpc('check_answer', { p_i: pzStage, p_ans: val }); }
+            catch { return toast("تعذر الاتصال بالسيرفر"); }
+            if (res === true) {
+                pzAnswers.push(val); pzStage++; pzWrong = 0;
+                beep(600, 'sine', 0.14); setTimeout(() => beep(880, 'sine', 0.2), 110);
+                renderPuzzle();
+                if (pzStage >= STAGES.length) {
+                    pzVideo = (await rpc('finish_puzzle', { p_answers: pzAnswers })) || '';
+                    toast("تم فك الشفرة! 🎉");
+                    setTimeout(openVideo, 700);
+                } else toast("إجابة صحيحة! المرحلة التالية");
+            } else {
+                pzWrong++;
+                inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+                beep(210, 'sawtooth', 0.25);
+                toast(pzWrong >= 2 ? "جرّب زر التلميح 💡" : "إجابة غير صحيحة، حاول مرة أخرى");
+            }
+        }
+
+        function openVideo() {
+            const v = document.getElementById('ksa-video');
+            if (!v.getAttribute('src')) {
+                v.onerror = () => { document.getElementById('vpick-btn').style.display = 'flex'; toast("الفيديو غير موجود بجانب الملف، اختره من الجهاز"); };
+                v.src = 'watan.mp4';
+            }
+            document.getElementById('video-modal').classList.add('open');
+            v.play().catch(() => {});
+        }
+        function pickVideo(e) {
+            const f = e.target.files[0]; if (!f) return;
+            const v = document.getElementById('ksa-video');
+            v.onerror = null; v.src = URL.createObjectURL(f); v.play().catch(() => {});
+            document.getElementById('vpick-btn').style.display = 'none';
+        }
+        function closeVideo() {
+            document.getElementById('ksa-video').pause();
+            document.getElementById('video-modal').classList.remove('open');
+        }
+
+        loadContent();
+    </script>
+</body>
+</html>
